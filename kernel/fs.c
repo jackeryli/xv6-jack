@@ -475,7 +475,7 @@ itrunc(struct inode *ip)
 
         for(j = 0; j < NINDIRECT; j++)
           if(a2[j])
-            bfree(ip->dev, a[j]);
+            bfree(ip->dev, a2[j]);
         
         brelse(bp2);
         bfree(ip->dev, a[i]);

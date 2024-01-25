@@ -484,3 +484,16 @@ sys_pipe(void)
   }
   return 0;
 }
+
+uint64
+sys_isatty(void)
+{
+  int fd;
+  struct file *f;
+
+  if(argfd(0, &fd, &f) < 0){
+    return -1;
+  }
+
+  return f->type == FD_DEVICE;
+}

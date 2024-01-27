@@ -121,6 +121,7 @@ UPROGS=\
 	$U/_find\
 	$U/_forktest\
 	$U/_grep\
+	$U/_history\
 	$U/_init\
 	$U/_kill\
 	$U/_ln\

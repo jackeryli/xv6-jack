@@ -13,11 +13,26 @@ history()
     exit(1);
   }
 
+  int count = 1;
   int n;
+  int atLineStart = 1;
+
   while((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
-      fprintf(2, "history: write error\n");
-      exit(1);
+    for (int i = 0; i < n; i++) {
+      if (atLineStart) {
+        fprintf(1, "%d ", count);
+        atLineStart = 0; // Reset the flag
+        count++;
+      }
+
+      if (buf[i] == '\n') {
+        atLineStart = 1; // Set the flag for the next line
+      }
+
+      if (write(1, &buf[i], 1) != 1) {
+        fprintf(2, "history: write error\n");
+        exit(1);
+      }
     }
   }
   if(n < 0){

@@ -148,7 +148,7 @@ int
 main(void)
 {
   static char buf[100];
-  int fd;
+  int fd, historyfd;
 
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
@@ -158,8 +158,18 @@ main(void)
     }
   }
 
+  if((historyfd = open(".sh_history", O_WRONLY | O_CREATE)) < 0){
+    fprintf(2, "cannot history\n");
+    close(historyfd);
+    exit(1);
+  }
+
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
+    // Record command history
+    if(strlen(buf) > 1){
+      write(historyfd, buf, strlen(buf));
+    }
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
@@ -171,6 +181,7 @@ main(void)
       runcmd(parsecmd(buf));
     wait(0);
   }
+  close(historyfd);
   exit(0);
 }
 
